@@ -17,7 +17,6 @@ def _scrapping(link):
     article.download()
     article.parse()
     text = article.text
-    # print('isi berita:', text)
     return text
 
 
@@ -93,7 +92,7 @@ def _create_tf_idf_matrix(tf_matrix, idf_matrix):
         tf_idf_table = {}
 
         for (word1, value1), (word2, value2) in zip(f_table1.items(),
-                                                    f_table2.items()):  # here, keys are the same in both the table
+                                                    f_table2.items()):  
             tf_idf_table[word1] = float(value1 * value2)
 
         tf_idf_matrix[sent1] = tf_idf_table
@@ -101,12 +100,6 @@ def _create_tf_idf_matrix(tf_matrix, idf_matrix):
     return tf_idf_matrix
 
 def _score_sentences(tf_idf_matrix) -> dict:
-    """
-    score a sentence by its word's TF
-    Basic algorithm: adding the TF frequency of every non-stop word in a sentence divided by total no of words in a sentence.
-    :rtype: dict
-    """
-
     sentenceValue = {}
 
     for sent, f_table in tf_idf_matrix.items():
@@ -121,29 +114,19 @@ def _score_sentences(tf_idf_matrix) -> dict:
     return sentenceValue
 
 def _find_average_score(sentenceValue) -> int:
-    """
-    Find the average score from the sentence value dictionary
-    :rtype: int
-    """
     sumValues = 0
     for entry in sentenceValue:
         sumValues += sentenceValue[entry]
 
-    # Average value of a sentence from original summary_text
     average = (sumValues / (len(sentenceValue)))
 
     return average
 
 def _find_average_score(sentenceValue) -> int:
-    """
-    Find the average score from the sentence value dictionary
-    :rtype: int
-    """
     sumValues = 0
     for entry in sentenceValue:
         sumValues += sentenceValue[entry]
 
-    # Average value of a sentence from original summary_text
     average = (sumValues / (len(sentenceValue)))
 
     return average
@@ -160,68 +143,25 @@ def _generate_summary(sentences, sentenceValue, threshold):
     return summary
 
 def predict(blm, th):
-    # print('text:', blm)
     text = _scrapping(blm)
 
-    # 1 Sentence Tokenize
     sentences = sent_tokenize(text)
     total_documents = len(sentences)
-    # print(total_documents)
-    # #print(sentences)
-    # print("\n")
 
-    # 2 Create the Frequency matrix of the words in each sentence.
     freq_matrix = _create_frequency_matrix(sentences)
-    # print("freq_matrix")
-    # print(freq_matrix)
-    # print("\n")
 
-    '''
-    Term frequency (TF) is how often a word appears in a document, divided by how many words are there in a document.
-    '''
-    # 3 Calculate TermFrequency and generate a matrix
     tf_matrix = _create_tf_matrix(freq_matrix)
-    # print("tf_matrix")
-    # print(tf_matrix)
-    # print("\n")
 
-    # 4 creating table for documents per words
     count_doc_per_words = _create_documents_per_words(freq_matrix)
-    # print("count_doc_per_words")
-    # print(count_doc_per_words)
-    # print("\n")
 
-    '''
-    Inverse document frequency (IDF) is how unique or rare a word is.
-    '''
-    # 5 Calculate IDF and generate a matrix
     idf_matrix = _create_idf_matrix(freq_matrix, count_doc_per_words, total_documents)
-    # print("idf_matrix")
-    # print(idf_matrix)
-    # print("\n")
 
-    # 6 Calculate TF-IDF and generate a matrix
     tf_idf_matrix = _create_tf_idf_matrix(tf_matrix, idf_matrix)
-    # print("tf_idf_matrix")
-    # print(tf_idf_matrix)
-    # print("\n")
 
-    # 7 Important Algorithm: score the sentences
     sentence_scores = _score_sentences(tf_idf_matrix)
-    # print("sentence_scores")
-    # print(sentence_scores)
-    # print("\n")
 
-    #Maxvalue = _find_max_value(sentence_scores)
-    #print(Maxvalue)
-    # print("\n")
-
-    # 8 Find the threshold
     threshold = _find_average_score(sentence_scores)
-    #print(threshold)
-    # print("\n")
 
-    # 9 Important Algorithm: Generate the summary
     summary = _generate_summary(sentences, sentence_scores, th * threshold)
     print(summary)
     return summary

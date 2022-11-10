@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-app = FastAPI() # bikin server
+app = FastAPI() 
 
 origins = [
     "*",
@@ -18,13 +18,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class Link(BaseModel): #var untuk dilempar
+class Link(BaseModel): 
     name: str
     size: float
 
-@app.post("/links") # membuat end point dengan method post dan url path/items
-async def create_item(link: Link): # format pastAPI (payload/req body)
+@app.post("/links") 
+async def create_item(link: Link): 
     result = predict(link.name, link.size)
-    return {"result" : result} # return jadi response
+    return {"result" : result} 
 
 
