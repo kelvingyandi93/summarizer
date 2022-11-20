@@ -13,10 +13,11 @@ from newspaper import Article
 
 def _scrapping(link):
 
-    article = Article(link) # Indonesia
+    article = Article(link, language = 'id') 
     article.download()
     article.parse()
     text = article.text
+    print(text)
     return text
 
 
@@ -131,16 +132,17 @@ def _find_average_score(sentenceValue) -> int:
 
     return average
 
-def _generate_summary(sentences, th, text):
+def _generate_summary(sentences, th, text, rank, threshold):
     sentence_count = 0
     print(th)
     number_of_sentences = len(nltk.sent_tokenize(text))
+    print(number_of_sentences)
     n = number_of_sentences * th
     
     summary = ''
 
     for sentence in sentences:
-        if sentence_count <= n:
+        if sentence[:15] in rank and rank[sentence[:15]] >= (threshold) and sentence_count <= n:
             summary += " " + sentence
             sentence_count += 1
 
@@ -166,7 +168,7 @@ def predict(blm, th):
 
     threshold = _find_average_score(sentence_scores)
 
-    summary = _generate_summary(sentences, th, text)
+    summary = _generate_summary(sentences, th, text, sentence_scores, threshold * 0.8)
     print(summary)
     return summary
     
