@@ -131,12 +131,16 @@ def _find_average_score(sentenceValue) -> int:
 
     return average
 
-def _generate_summary(sentences, sentenceValue, threshold):
+def _generate_summary(sentences, th, text):
     sentence_count = 0
+    print(th)
+    number_of_sentences = len(nltk.sent_tokenize(text))
+    n = number_of_sentences * th
+    
     summary = ''
 
     for sentence in sentences:
-        if sentence[:15] in sentenceValue and sentenceValue[sentence[:15]] >= (threshold):
+        if sentence_count <= n:
             summary += " " + sentence
             sentence_count += 1
 
@@ -162,7 +166,7 @@ def predict(blm, th):
 
     threshold = _find_average_score(sentence_scores)
 
-    summary = _generate_summary(sentences, sentence_scores, th * threshold)
+    summary = _generate_summary(sentences, th, text)
     print(summary)
     return summary
     
