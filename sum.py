@@ -42,6 +42,9 @@ def _create_frequency_matrix(sentences):
 
         frequency_matrix[sent[:15]] = freq_table
 
+    print("frequency_matrix")
+    print(frequency_matrix)
+
     return frequency_matrix
 
 
@@ -57,6 +60,9 @@ def _create_tf_matrix(freq_matrix):
 
         tf_matrix[sent] = tf_table
 
+    print("tf_matrix")    
+    print(tf_matrix)
+
     return tf_matrix
 
 def _create_documents_per_words(freq_matrix):
@@ -68,6 +74,9 @@ def _create_documents_per_words(freq_matrix):
                 word_per_doc_table[word] += 1
             else:
                 word_per_doc_table[word] = 1
+
+    print("word_per_doc_table")
+    print(word_per_doc_table)
 
     return word_per_doc_table
 
@@ -82,6 +91,9 @@ def _create_idf_matrix(freq_matrix, count_doc_per_words, total_documents):
             idf_table[word] = math.log10(total_documents / float(count_doc_per_words[word]))
 
         idf_matrix[sent] = idf_table
+
+    print("idf_matrix")
+    print(idf_matrix)
 
     return idf_matrix
 
@@ -98,6 +110,9 @@ def _create_tf_idf_matrix(tf_matrix, idf_matrix):
 
         tf_idf_matrix[sent1] = tf_idf_table
 
+    print("tf_idf_matrix")
+    print(tf_idf_matrix)
+
     return tf_idf_matrix
 
 def _score_sentences(tf_idf_matrix) -> dict:
@@ -112,6 +127,9 @@ def _score_sentences(tf_idf_matrix) -> dict:
 
         sentenceValue[sent] = total_score_per_sentence / count_words_in_sentence
 
+    print("sentenceValue")
+    print(sentenceValue)
+
     return sentenceValue
 
 def _find_average_score(sentenceValue) -> int:
@@ -121,14 +139,8 @@ def _find_average_score(sentenceValue) -> int:
 
     average = (sumValues / (len(sentenceValue)))
 
-    return average
-
-def _find_average_score(sentenceValue) -> int:
-    sumValues = 0
-    for entry in sentenceValue:
-        sumValues += sentenceValue[entry]
-
-    average = (sumValues / (len(sentenceValue)))
+    print("average")
+    print(average)
 
     return average
 
@@ -168,7 +180,7 @@ def predict(blm, th):
 
     threshold = _find_average_score(sentence_scores)
 
-    summary = _generate_summary(sentences, th, text, sentence_scores, threshold * 0.8)
+    summary = _generate_summary(sentences, th, text, sentence_scores, threshold * 0.3)
     print(summary)
     return summary
     
