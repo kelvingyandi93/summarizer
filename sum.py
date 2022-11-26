@@ -1,13 +1,11 @@
 import math
 import nltk
 
-import imp
-import pandas as pd
-import re
-import json
+from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
 from nltk import sent_tokenize, word_tokenize, PorterStemmer
 from nltk.corpus import stopwords    
+
 from newspaper import Article    
 
 
@@ -25,13 +23,16 @@ def _create_frequency_matrix(sentences):
     frequency_matrix = {}
     stopWords = set(stopwords.words("indonesian"))
     ps = PorterStemmer()
+    factory = StemmerFactory()
+    stemmer = factory.create_stemmer()
+   
 
     for sent in sentences:
         freq_table = {}
         words = word_tokenize(sent)
         for word in words:
             word = word.lower()
-            word = ps.stem(word)
+            word = stemmer.stem(word)
             if word in stopWords:
                 continue
 
